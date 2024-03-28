@@ -1,0 +1,29 @@
+name: Continuous Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: npm install # หรือคำสั่งที่ใช้ในการติดตั้ง dependencies ของคุณ
+
+      - name: Build
+        run: npm run build # หรือคำสั่งที่ใช้ในการสร้างแอปพลิเคชันของคุณ
+
+      - name: Deploy to server
+        uses: easingthemes/ssh-deploy@v2.1.8
+        with:
+          server_ip: ${{ secrets.SERVER_IP }}
+          server_username: ${{ secrets.SERVER_USERNAME }}
+          server_password: ${{ secrets.SERVER_PASSWORD }}
+          local_path: ./dist # ระบุที่อยู่ที่เก็บไฟล์ที่จะนำไปใช้งานบนเซิร์ฟเวอร์
+          server_path: /var/www/html # ระบุที่อยู่ที่ต้องการเก็บไฟล์บนเซิร์ฟเวอร์
