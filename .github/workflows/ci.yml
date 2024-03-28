@@ -18,18 +18,44 @@ jobs:
     env:
       FULLNAME: "Mary Doe"
     steps:
-      - run: echo ${{ env.COMPANY_NAME }}
-      - run: echo "My host is $MY_HOST and $FULLNAME"
-      - run: echo "Hello ${{ github.actor }} $FULLNAME $COMPANY_NAME"
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Display COMPANY_NAME using vars
+        run: echo ${{ vars.COMPANY_NAME }}
+
+      - name: Display COMPANY_NAME using env
+        run: echo ${{ env.COMPANY_NAME}}
+
+      - name: Display MYSQL_PASSWORD
+        run: echo ${{ secrets.MYSQL_PASSWORD}}
+
+      - name: Display host and fullname
+        run: echo "My host is $MY_HOST and $FULLNAME $COMPANY_NAME"
+
+      - name: Display greeting
+        run: echo "Hello ${{ github.actor }} $FULLNAME"
 
   test-job:
     runs-on: ubuntu-latest
     needs: build-job
     steps:
-      - run: echo "Repo ${{ github.repository }} ${{ env.MY_HOST }}"
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Display repository and MY_HOST
+        run: echo "Repo is ${{ github.repository }} ${{ env.MY_HOST }}"
+
+      - name: Run PHP lint
+        run: |
+          find . -name "*.php" -print0 | xargs -0 -n1 php -l
 
   deploy-job:
     runs-on: ubuntu-latest
     needs: test-job
     steps:
-      - run: echo "deploy job to production server ${{ job.status }}"
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Deploy to production server
+        run: echo "Deploy job to production server ${{ job.status }}"
