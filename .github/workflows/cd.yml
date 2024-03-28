@@ -20,7 +20,7 @@ jobs:
         run: npm run build # หรือคำสั่งที่ใช้ในการสร้างแอปพลิเคชันของคุณ
 
       - name: Deploy to server
-        uses: easingthemes/ssh-deploy@v2.1.8
+        uses: easingthemes/ssh-deploy@latest
         with:
           server_ip: ${{ secrets.SERVER_IP }}
           server_username: ${{ secrets.SERVER_USERNAME }}
